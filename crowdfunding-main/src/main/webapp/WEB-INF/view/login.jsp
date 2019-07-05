@@ -5,7 +5,7 @@
   Time: 17:59
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" isELIgnored="false"   %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -26,26 +26,28 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <div><a class="navbar-brand" href="index.html" style="font-size:32px;">尚筹网-创意产品众筹平台</a></div>
+            <div><a class="navbar-brand" href="${APP_PATH}/index.htm" style="font-size:32px;">尚筹网-创意产品众筹平台</a></div>
         </div>
     </div>
 </nav>
 
 <div class="container">
 
-    <form id="loginForm" action="${APP_PATH}/doLogin.do" method="post"  class="form-signin" role="form">
-        ${loginException.message}
-        <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
-        <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control" id="inputSuccess4" name="loginacct" placeholder="请输入登录账号" autofocus>
+    <form id="loginForm"   class="form-signin" role="form">
+        <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2><br>
+        <h6>${loginException.message}</h6>
+        <div class="form-group  has-feedback">
+            <input type="text" class="form-control" id="floginacct" name="loginacct" placeholder="请输入登录账号" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            <span class="help-block"></span>
         </div>
-        <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control" id="inputSuccess4" name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
+        <div class="form-group  has-feedback">
+            <input type="text" class="form-control" id="fuserpswd" name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            <span class="help-block"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <select class="form-control" name="type" >
+            <select id="ftype" class="form-control" name="type" >
                 <option value="member">会员</option>
                 <option value="user">管理</option>
             </select>
@@ -69,7 +71,75 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script>
     function dologin() {
-       $("#loginForm").submit();
+       // $("#loginForm").submit();
+
+        //1.校验表单数据信息是否符合格式
+        var flag = form_login_check();
+        if(flag!=true){
+            return false;
+        }
+        //2.序列化表单，获取表单数据
+        var dataform =  $("#loginForm").serialize();
+
+        //3.提交异步登录请求
+        $.ajax({
+            url:"${APP_PATH}/doLogin.do",
+            data:dataform,
+            type:"POST",
+            dataType:"JSON",
+            success:function (data) {
+                if(data.success){
+                  window.location.href = "${APP_PATH}/main.htm";
+                }else{
+                  alert(data.message);
+                }
+            }
+        })
+    }
+
+    //用于校验表单数据的方法
+    function form_login_check() {
+        //1.校验用户名
+       var loginacct = $("#floginacct").val();
+       var regex_acct = /(^[a-zA-Z0-9_-]{5,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
+       var flag_acct = regex_acct.test(loginacct);
+       if(flag_acct!=true){
+           /*      $("#floginacct").parent().addClass("has-error");
+         $("#floginacct").nextAll(".help-block").text("用户名格式必须满足5-16个字符或2-5个中文字");*/
+           form_statu_check("#floginacct","fail","用户名格式必须满足5-16个字符或2-5个中文字");
+           return false;
+       }
+        /*
+        $("#floginacct").parent().addClass("has-success");
+           $("#floginacct").nextAll(".help-block").text("用户名格式正确");*/
+        form_statu_check("#floginacct","success","用户名格式正确");
+
+       //2.校验密码
+       var userpswd = $("#fuserpswd").val();
+       var regex_pswd = /^[a-zA-Z0-9_-]{3,18}$/;
+       var flag_pswd = regex_pswd.test(userpswd);
+       if(flag_pswd!=true){
+           form_statu_check("#fuserpswd","fail","密码格式错误!");
+           return false;
+       }
+        form_statu_check("#fuserpswd","success","密码格式正确");
+
+       return true;
+    }
+
+    function form_statu_check(emp,statu,message) {
+        //1.先清除所有的状态信息
+        $(emp).parent().removeClass("has-success has-error");
+        $(emp).nextAll(".help-block").text("");
+        //2.根据statu 设置状态信息
+        if(statu=="success"){
+            $(emp).parent().addClass("has-success");
+            $(emp).nextAll(".help-block").text(message);
+        }
+        if(statu=="fail"){
+            $(emp).parent().addClass("has-error");
+            $(emp).nextAll(".help-block").text(message);
+        }
     }
 </script>
 </body>
