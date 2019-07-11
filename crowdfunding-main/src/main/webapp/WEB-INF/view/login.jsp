@@ -69,10 +69,11 @@
 </div>
 <script src="${APP_PATH}/jquery/jquery-2.1.1.min.js"></script>
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
+<script src="${APP_PATH}/jquery/layer/layer.js"></script> <%--导入layer弹窗组件 --%>
 <script>
     function dologin() {
        // $("#loginForm").submit();
-
+        var loadingIndex ;
         //1.校验表单数据信息是否符合格式
         var flag = form_login_check();
         if(flag!=true){
@@ -88,10 +89,13 @@
             type:"POST",
             dataType:"JSON",
             success:function (data) {
+                layer.close(loadingIndex);
                 if(data.success){
-                  window.location.href = "${APP_PATH}/main.htm";
+                    layer.msg("登录成功!", {time:1000, icon:16},function () {
+                        window.location.href = "${APP_PATH}/main.htm";
+                    });
                 }else{
-                  alert(data.message);
+                    layer.msg(data.message, {time:1000, icon:5, shift:6}); //弹出时间，图标，特效
                 }
             }
         })
@@ -139,6 +143,9 @@
         if(statu=="fail"){
             $(emp).parent().addClass("has-error");
             $(emp).nextAll(".help-block").text(message);
+            layer.msg(message, {time:1000, icon:5, shift:6}); //弹出时间，图标，特效
+            $(emp).val("");
+            $(emp).focus();
         }
     }
 </script>

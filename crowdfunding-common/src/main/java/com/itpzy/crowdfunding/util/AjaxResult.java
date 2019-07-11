@@ -8,16 +8,13 @@ import java.util.Map;
  */
 public class AjaxResult {
 
-    /**
-     * 如果为true则执行成功，如果为false则执行失败
-     */
+    // 如果为true则执行成功，如果为false则执行失败
     private boolean success;
     //存储的信息
     private String message;
 
-    /**
-     * 用于存储Control执行后要返回的数据
-     */
+
+    //用于存储Control执行后要返回的数据
     private Map<String,Object> dataMap = new HashMap<>();
 
     /**
@@ -59,8 +56,9 @@ public class AjaxResult {
      * @param key
      * @param value
      */
-    public void add(String key, Object value){
+    public AjaxResult add(String key, Object value){
         this.dataMap.put(key,value);
+        return this;
     }
 
 
@@ -79,5 +77,13 @@ public class AjaxResult {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Map<String, Object> getDataMap() {
+        return dataMap;
+    }
+
+    public void setDataMap(Map<String, Object> dataMap) {
+        this.dataMap = dataMap;
     }
 }

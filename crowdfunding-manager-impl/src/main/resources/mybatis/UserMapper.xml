@@ -7,13 +7,13 @@
     <result column="userpswd" jdbcType="CHAR" property="userpswd" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="createtime" jdbcType="CHAR" property="createtime" />
+    <result column="createtime" jdbcType="CHAR" property="createtime"  />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="User">
+  <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id"  >
     insert into t_user (id, loginacct, userpswd, 
       username, email, createtime
       )
@@ -23,11 +23,12 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="User">
     update t_user
-    set loginacct = #{loginacct,jdbcType=VARCHAR},
-      userpswd = #{userpswd,jdbcType=CHAR},
-      username = #{username,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=CHAR}
+    set
+    <if test="loginacct!=null and loginacct!=''">
+      loginacct = #{loginacct,jdbcType=VARCHAR},
+    </if>
+    <if test="username!=null and username!=''">username = #{username,jdbcType=VARCHAR},</if>
+    <if test="email!=null and email!=''" > email = #{email,jdbcType=VARCHAR}</if>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -49,4 +50,42 @@
   <select id="selectCountUser" resultType="int">
     select count(1) from t_user where loginacct = #{loginacct}
   </select>
+
+  <!--分页查询用户 -->
+<!--  <select id="selectPage" resultType="user">
+      select * from t_user limit #{startIndex},#{pageSize};
+  </select>-->
+  <!--查询用户的总记录数  -->
+<!--  <select id="selectCount" resultType="int">
+      select count(1) from t_user ;
+  </select>-->
+
+  <!--分页查询用户 -->
+  <select id="selectPage" resultType="user">
+    select * from t_user
+     <where>
+       <if test="queryText!=null and queryText!=''">
+         loginacct like concat('%',#{queryText},'%')
+       </if>
+     </where>
+     order by createTime DESC
+     limit #{startIndex},#{pagesize};
+  </select>
+  <!--查询用户的总记录数  -->
+  <select id="selectCount" resultType="int">
+    select count(1) from t_user
+     <where>
+       <if test="queryText!=null and queryText!=''">
+         loginacct like concat('%',#{queryText},'%')
+       </if>
+     </where>
+     ;
+  </select>
+
+  <select id="selectRepeatUser" resultType="int">
+    select count(1) from t_user where loginacct=#{loginacct};
+  </select>
+
+
+
 </mapper>

@@ -8,6 +8,7 @@ import com.itpzy.crowdfunding.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -43,7 +44,7 @@ public class DispatcherControl {
      * 异步：用户登录方法
      * @return
      */
-    @RequestMapping(value="/doLogin")
+    @RequestMapping(value="/doLogin",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult doLogin(String loginacct, String userpswd, String type, HttpSession session) {
         Map<String,Object> userMap = new HashMap<>();
@@ -58,7 +59,6 @@ public class DispatcherControl {
          e.printStackTrace();
            return AjaxResult.fail(e.getMessage());
        }
-
     }
 
 

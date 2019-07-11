@@ -48,6 +48,12 @@
         <property name="basePackage" value="com.itpzy.crowdfunding.potal.dao,com.itpzy.crowdfunding.manager.dao"></property>
     </bean>
 
+    <!--线程安全的SqlSession -->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+        <constructor-arg name="executorType" value="SIMPLE"></constructor-arg>
+    </bean>
+
     <!--整合Mybatis配置文件结束 -->
 
     <!--整合Spring配置文件开始 -->
@@ -73,7 +79,7 @@
     <!--配置事务通知和切入点对应关系 -->
     <aop:config>
         <!--配置切入点类型 -->
-        <aop:pointcut id="pointcut1" expression="execution(* com.itpzy.crowdfunding..*Service.*(..))"></aop:pointcut>
+        <aop:pointcut id="pointcut1" expression="execution(* com.itpzy.crowdfunding..*ServiceImpl.*(..))"></aop:pointcut>
         <!--配置切面 -->
         <aop:advisor advice-ref="tx-advice" pointcut-ref="pointcut1"></aop:advisor>
     </aop:config>
