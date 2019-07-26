@@ -1,5 +1,8 @@
 package com.itpzy.crowdfunding.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Permission {
     private Integer id;
 
@@ -10,6 +13,13 @@ public class Permission {
     private String icon;
 
     private String url;
+
+    private boolean open;
+
+    private boolean checked;
+
+    private List<Permission> children = new ArrayList<Permission>();
+
 
     public Integer getId() {
         return id;
@@ -49,5 +59,29 @@ public class Permission {
 
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public List<Permission> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Permission> children) {
+        this.children = children;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }

@@ -35,7 +35,7 @@
 
     <form id="loginForm"   class="form-signin" role="form">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2><br>
-        <h6>${loginException.message}</h6>
+        <h6 style="color: red">${sessionScope.loginMsg}</h6>
         <div class="form-group  has-feedback">
             <input type="text" class="form-control" id="floginacct" name="loginacct" placeholder="请输入登录账号" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>

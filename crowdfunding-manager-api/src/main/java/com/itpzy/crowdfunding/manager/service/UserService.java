@@ -2,6 +2,7 @@ package com.itpzy.crowdfunding.manager.service;
 
 import com.itpzy.crowdfunding.bean.User;
 import com.itpzy.crowdfunding.util.Page;
+import com.itpzy.crowdfunding.vo.Data;
 
 import java.util.List;
 import java.util.Map;
@@ -62,8 +63,17 @@ public interface UserService {
 
     /**
      * 根据id集合，删除多个用户
-     * @param idList
+     * @param
      * @return
      */
-    int deleteUserList(List<Integer> idList);
+    int deleteUserList(Data userData);
+
+    //根据用户id，查询出所有角色id
+    List<Integer> selectRoleById(Integer id);
+
+    //给用户分配角色
+    int doAssignRole(Integer userId, Data datas);
+
+    //移除用户下的角色
+    int doAssignUnRole(Integer userId, Data datas);
 }

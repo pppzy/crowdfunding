@@ -1,11 +1,12 @@
 package com.itpzy.crowdfunding.manager.service.impl;
 
 import com.itpzy.crowdfunding.bean.User;
+import com.itpzy.crowdfunding.exception.DoLoginException;
 import com.itpzy.crowdfunding.manager.dao.UserMapper;
 import com.itpzy.crowdfunding.manager.service.UserService;
-import com.itpzy.crowdfunding.util.DoLoginException;
 import com.itpzy.crowdfunding.util.MD5Util;
 import com.itpzy.crowdfunding.util.Page;
+import com.itpzy.crowdfunding.vo.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+
+
 
     @Override
     public User selectUserDoLogin(Map usermap) {
@@ -99,6 +103,8 @@ public class UserServiceImpl implements UserService {
         user.setCreatetime(createTime);
         user.setUserpswd(pswd);
         int insert = userMapper.insert(user);
+        //注册用户后，默认给该用户分配一个基础角色
+        int count = userMapper.doAssignBaseRole(user.getId(),10);
         return insert;
     }
 
@@ -129,12 +135,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int deleteUserList(List<Integer> idList) {
-      int count = 0;
-        for (Integer integer : idList) {
-            userMapper.deleteByPrimaryKey(integer);
-            count++;
-        }
+    public int deleteUserList(Data userData) {
+
+        int count = userMapper.deleteBatchUser(userData);
+
         return count;
     }
+
+    @Override
+    public List<Integer> selectRoleById(Integer id) {
+      List<Integer> ids = userMapper.selectRoleById(id);
+        return ids;
+    }
+
+    @Override
+    public int doAssignRole(Integer userId, Data datas) {
+       int count =  userMapper.doAssignRole(userId,datas);
+        return count;
+    }
+
+    @Override
+    public int doAssignUnRole(Integer userId, Data datas) {
+        int count = userMapper.doAssignUnRole(userId,datas);
+        return count;
+    }
+
 }

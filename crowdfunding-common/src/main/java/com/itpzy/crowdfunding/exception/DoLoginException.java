@@ -1,4 +1,4 @@
-package com.itpzy.crowdfunding.util;
+package com.itpzy.crowdfunding.exception;
 
 public class DoLoginException extends RuntimeException {
 

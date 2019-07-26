@@ -27,4 +27,37 @@
     select id, name
     from t_role
   </select>
+
+  <select id="selectCount" resultType="int" >
+    select count(1) from t_role
+  </select>
+
+  <select id="selectCountWithText" resultType="int" >
+    select count(1) from t_role
+    <where>
+      <if test="queryText!=null and queryText !='' ">
+        name like concat('%',#{queryText},'%');
+      </if>
+    </where>
+  </select>
+
+  <select id="selectRole" resultMap="BaseResultMap" >
+    select * from t_role
+    <where>
+      <if test="text!=null and text!='' "> name like concat('%',#{text},'%')</if>
+    </where>
+    limit #{page.startIndex},#{page.pageSize};
+  </select>
+
+  <select id="selectRoleWithPermission" parameterType="int" resultType="int" >
+    select permissionid from t_role_permission where roleid = #{id};
+  </select>
+
+  <insert id="assignPermission"  >
+    INSERT into t_role_permission (roleid,permissionid) value(#{roleid},#{permissionid});
+  </insert>
+
+  <delete id="deletePermissionById" >
+    DELETE from t_role_permission where roleid = #{id};
+  </delete>
 </mapper>

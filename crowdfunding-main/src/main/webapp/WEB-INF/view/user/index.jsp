@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="${APP_PATH}/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${APP_PATH}/css/font-awesome.min.css">
     <link rel="stylesheet" href="${APP_PATH}/css/main.css">
+    <link rel="stylesheet" href="${APP_PATH}/css/pagination.css">
     <style>
         .tree li {
             list-style-type: none;
@@ -43,24 +44,6 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <%@include file="/WEB-INF/view/common/maintop.jsp"%>
-             <%--   <li style="padding-top:8px;">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-user"></i> ${} <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
-                            <li class="divider"></li>
-                            <li><a href="index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li style="margin-left:10px;padding-top:8px;">
-                    <button type="button" class="btn btn-default btn-danger">
-                        <span class="glyphicon glyphicon-question-sign"></span> 帮助
-                    </button>
-                </li>--%>
             </ul>
             <form class="navbar-form navbar-right">
                 <input type="text" class="form-control" placeholder="Search...">
@@ -73,68 +56,7 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <div class="tree">
-                <ul style="padding-left:0px;" class="list-group">
-                    <li class="list-group-item tree-closed" >
-                        <a href="main.html"><i class="glyphicon glyphicon-dashboard"></i> 控制面板</a>
-                    </li>
-                    <li class="list-group-item">
-                        <span><i class="glyphicon glyphicon glyphicon-tasks"></i> 权限管理 <span class="badge" style="float:right">3</span></span>
-                        <ul style="margin-top:10px;">
-                            <li style="height:30px;">
-                                <a href="${APP_PATH}/user/toIndex.htm" style="color:red;"><i class="glyphicon glyphicon-user"></i> 用户维护</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="role.html"><i class="glyphicon glyphicon-king"></i> 角色维护</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="permission.html"><i class="glyphicon glyphicon-lock"></i> 许可维护</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="list-group-item tree-closed">
-                        <span><i class="glyphicon glyphicon-ok"></i> 业务审核 <span class="badge" style="float:right">3</span></span>
-                        <ul style="margin-top:10px;display:none;">
-                            <li style="height:30px;">
-                                <a href="auth_cert.html"><i class="glyphicon glyphicon-check"></i> 实名认证审核</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="auth_adv.html"><i class="glyphicon glyphicon-check"></i> 广告审核</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="auth_project.html"><i class="glyphicon glyphicon-check"></i> 项目审核</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="list-group-item tree-closed">
-                        <span><i class="glyphicon glyphicon-th-large"></i> 业务管理 <span class="badge" style="float:right">7</span></span>
-                        <ul style="margin-top:10px;display:none;">
-                            <li style="height:30px;">
-                                <a href="cert.html"><i class="glyphicon glyphicon-picture"></i> 资质维护</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="type.html"><i class="glyphicon glyphicon-equalizer"></i> 分类管理</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="process.html"><i class="glyphicon glyphicon-random"></i> 流程管理</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="advertisement.html"><i class="glyphicon glyphicon-hdd"></i> 广告管理</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="message.html"><i class="glyphicon glyphicon-comment"></i> 消息模板</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="project_type.html"><i class="glyphicon glyphicon-list"></i> 项目分类</a>
-                            </li>
-                            <li style="height:30px;">
-                                <a href="tag.html"><i class="glyphicon glyphicon-tags"></i> 项目标签</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="list-group-item tree-closed" >
-                        <a href="param.html"><i class="glyphicon glyphicon-list-alt"></i> 参数管理</a>
-                    </li>
-                </ul>
+                <%@include file="/WEB-INF/view/common/menu.jsp"%>
             </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -174,9 +96,7 @@
                             <tfoot>
                             <tr >
                                 <td colspan="6" align="center">
-                                    <ul class="pagination">
-
-                                    </ul>
+                                    <ul class="pagination"></ul>
                                 </td>
                             </tr>
                             </tfoot>
@@ -192,6 +112,8 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH}/script/docs.min.js"></script>
 <script src="${APP_PATH}/jquery/layer/layer.js"></script>
+<script src="${APP_PATH}/script/menu.js"></script>
+<script src="${APP_PATH}/jquery/pagination/jquery.pagination.js"></script>
 <script type="text/javascript">
     $(function () {
         $(".list-group-item").click(function(){
@@ -204,27 +126,24 @@
                 }
             }
         });
+        showMenu();
+       ajax_select_page(0);
+    });
 
-       ajax_select_page(1);
-    });
-    $("tbody .btn-success").click(function(){
-        window.location.href = "assignRole.html";
-    });
-    $("tbody .btn-primary").click(function(){
-        window.location.href = "edit.html";
-    });
+
+
 
 
     //json字符串用于传输异步时候传输数据，queryText:模糊查询字段
     var jsonData = {
         "pageno":1,
         "pagesize":10,
-        "queryText":'',
+        "queryText":''
     }
 
 
 
-    $("#queryBtn").click(function () {
+    $("#queryBtn").click(function (){
         var queryText = $("#queryText").val();
         jsonData.queryText = queryText;
         ajax_select_page(1);
@@ -233,8 +152,11 @@
 
 
     //异步分页查询方法：
-    function ajax_select_page(pageno) {
-        jsonData.pageno = pageno;
+    function ajax_select_page(pageIndex) {
+        jsonData.pageno = pageIndex+1;
+        if(jsonData.pageno<0){
+            jsonData.pageno==1
+        }
         $.ajax({
            type:"POST",
            url:"${APP_PATH}/user/ajaxUserPage.do",
@@ -263,15 +185,15 @@
         var content = "";
         $.each(list,function (index, user) {
         content += '   <tr>\n' +
-            '     <td>'+user.id+'</td>\n' +
-            '     <td><input type="checkbox" name="delCheckBox" class="delCB" ></td>\n' +
+            '     <td>'+(index+1)+'</td>\n' +
+            '     <td><input type="checkbox" name="delCheckBox" id="'+user.id+'" class="delCB" ></td>\n' +
             '     <td>'+user.loginacct+'</td>\n' +
             '     <td>'+user.username+'</td>\n' +
             '     <td>'+user.email+'</td>\n' +
             '     <td>\n' +
-            '          <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>\n' +
+            '          <button type="button"onclick="window.location.href=\'${APP_PATH}/user/toAssignRole.htm?id='+user.id+'\'" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>\n' +
             '          <button type="button" onclick="window.location.href=\'${APP_PATH}/user/toEdit.htm?id='+user.id+'\' "  class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>\n' +
-            '          <button type="button"  class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>\n' +
+            '          <button type="button" id="'+user.id+'"  class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>\n' +
             '     </td>\n' +
             '     </tr>    '
 
@@ -279,7 +201,20 @@
         $("tbody").html(content);
     }
 
-    //前五后四方式分页
+    function user_page(page) {
+            $(".pagination").pagination(page.totalCount,{
+                items_per_page:page.pageSize,
+                num_display_entries:4,
+                current_page:(page.pageNo-1),
+                num_edge_entries:1,
+                prev_text:"上一页",
+                next_text:"下一页",
+                callback:ajax_select_page
+            })
+    }
+
+
+   /* //前五后四方式分页
     function user_page(pageinfo) {
         var start = 0;
         var end = 0;
@@ -332,12 +267,12 @@
 
         $("tfoot ul").html(content);
 
-    }
+    }*/
 
     //给每个删除按钮绑定删除单个用户方法
     $("tbody").on("click",".btn-danger",function () {
         var name =  $(this).parents("tr").find("td:eq(2)").text();
-        var id = $(this).parents("tr").find("td:eq(0)").text();
+        var id = this.id;
         layer.confirm("确定要删除"+name+"吗？",{icon:3,title:'提示'},function (index) {
             $.ajax({
                 url:"${APP_PATH}/user/toDelUser.do",
@@ -380,36 +315,40 @@
     //删除多个
     $("#delBtn").click(function () {
         var nameContent = '';
-        var ids = '';
+        var jsonObj = {};
+        var length = $("tbody input:checked").length;
         $("tbody input:checked").each(function (index, user) {
             nameContent+=   $(user).parents("tr").find("td:eq(2)").text()+'-';
-            ids+=  $(this).parents("tr").find("td:eq(0)").text()+'-';
-
+            jsonObj["datas["+index+"].id"] = user.id;
         })
        var name =  nameContent.substring(0,nameContent.length-1);
-       var idStr=ids.substring(0,nameContent.length-1);
-        layer.confirm("确定要删除["+name+"]这些用户吗?",{icon:3,title:"提示"},function (index) {
-            $.ajax({
-              type:"POST",
-              url:"${APP_PATH}/user/toDelUserList.do",
-              data:"idStr="+idStr,
-              success:function (data) {
-                  if(data.success){
-                      layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
-                          window.location.href="${APP_PATH}/user/toIndex.htm";
-                      })
-                  }else{
-                      layer.msg(data.message,{time:1000,icon:5,shift:5})
-                  }
-              },
-              error:function () {
-                  layer.msg("删除异常!",{time:1000,icon:5,shift:5})
-              }
-            });
-            layer.close(index);
-        },function (index) {
-            layer.close(index);
-        })
+       if(length>0){
+           layer.confirm("确定要删除["+name+"]这些用户吗?",{icon:3,title:"提示"},function (index) {
+               $.ajax({
+                   type:"POST",
+                   url:"${APP_PATH}/user/toDelUserList.do",
+                   data:jsonObj,
+                   success:function (data) {
+                       if(data.success){
+                           layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
+                               window.location.href="${APP_PATH}/user/toIndex.htm";
+                           })
+                       }else{
+                           layer.msg(data.message,{time:1000,icon:5,shift:5})
+                       }
+                   },
+                   error:function () {
+                       layer.msg("删除异常!",{time:1000,icon:5,shift:5})
+                   }
+               });
+               layer.close(index);
+           },function (index) {
+               layer.close(index);
+           })
+       }else{
+           layer.msg("请选择要删除的用户?",{time:1000,icon:5,shift:5});
+       }
+
     });
 
 

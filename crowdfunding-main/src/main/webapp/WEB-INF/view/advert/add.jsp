@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -56,25 +57,24 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <ol class="breadcrumb">
                 <li><a href="#">首页</a></li>
-                <li><a href="#">数据列表</a></li>
+                <li><a href="#">广告管理</a></li>
                 <li class="active">新增</li>
             </ol>
             <div class="panel panel-default">
-                <div class="panel-heading">表单数据<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-heading">广告<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
-                    <form id="addForm" role="form">
+                    <form id="addForm" role="form" method="post" action="${APP_PATH}/advert/upload.do" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="floginacct">登陆账号</label>
-                            <input type="text" class="form-control" id="floginacct" placeholder="请输入登陆账号">
+                            <label for="fname">广告名</label>
+                            <input type="text" class="form-control" id="fname" name="name" placeholder="请输入名称">
                         </div>
                         <div class="form-group">
-                            <label for="fusername">用户名称</label>
-                            <input type="text" class="form-control" id="fusername" placeholder="请输入用户名称">
+                            <label for="furl">广告路径</label>
+                            <input type="text" class="form-control" id="furl" name="url" placeholder="请输入路径">
                         </div>
                         <div class="form-group">
-                            <label for="femail">邮箱地址</label>
-                            <input type="email" class="form-control" id="femail" placeholder="请输入邮箱地址">
-                            <p class="help-block label label-warning">请输入合法的邮箱地址, 格式为： xxxx@xxxx.com</p>
+                            <label for="fpic">上传图片</label>
+                            <input type="file" class="form-control" id="fpic" name="upload" placeholder="请插入图片">
                         </div>
                         <button id="addBtn" type="button" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 新增</button>
                         <button id="resetBtn"  type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
@@ -114,6 +114,7 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH}/script/docs.min.js"></script>
 <script src="${APP_PATH}/jquery/layer/layer.js"></script>
+
 <script type="text/javascript">
     $(function () {
         $(".list-group-item").click(function(){
@@ -126,97 +127,12 @@
                 }
             }
         });
-    });
 
+    });
+    //同步方式提交表单
     $("#addBtn").click(function () {
-        //1.提交之前需要进行表单的校验（前台校验）
-        var flag = add_form_check();
-        if(!flag){
-            return false;
-        }
-        //2.根据addBtn的属性判断用户名是否重复(后台校验)
-        var repeat_flag =$("#addBtn").attr("repeatTest");
-        if(repeat_flag=="fail"){
-            return false;
-        }
-
-        //3.发送异步请求向数据库添加用户
-        $.ajax({
-            type:"POST",
-            url:"${APP_PATH}/user/doAddUser.do",
-            data:{
-               "loginacct":$("#floginacct").val(),
-               "username" :$("#fusername").val(),
-                "email" :$("#femail").val()
-            },
-            dataType:"JSON",
-            success:function (data) {
-                if(data.success){
-                    layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
-                        window.location.href="${APP_PATH}/user/toIndex.do";
-                    })
-
-                }else{
-                    layer.msg(data.message,{time:1000,icon:5,shift:5});
-                }
-            },
-            error:function (data) {
-                layer.msg("请求失败!",{time:1000,icon:5,shift:5});
-            }
-        })
-
-
-
+        $("#addForm").submit();
     });
-    //客户端表单校验方法
-    function add_form_check(){
-        //1.对账户进行校验
-        var loginacct = $("#floginacct").val();
-        var acct_regex = /^[a-zA-Z0-9_-]{5,16}$/;
-        var acct_flag =acct_regex.test(loginacct);
-        if(!acct_flag){
-            layer.msg("账户格式不正确，必须为5-16个字母或数字组成", {time:1000, icon:5, shift:5});
-            return false;
-        }
-
-        //2.对用户名称进行校验
-        var username = $("#fusername").val();
-        var username_regex = /(^[a-zA-Z0-9_-]{5,16}$)|(^[\u2E80-\u9FFF]{3,8})/;
-        var username_flag = username_regex.test(username);
-        if(!username_flag){
-            layer.msg("用户名称格式不正确，必须为5-16个字母数字组成或3-8个中文字",{time:1000,icon:5,shift:5});
-            return false;
-        }
-
-        //3.对邮箱进行校验
-        var email = $("#femail").val();
-        var email_regex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
-        var email_flag = email_regex.test(email);
-        if(!email_flag){
-            layer.msg("邮箱格式不正确",{time:1000,icon:5,shift:5});
-            return false;
-        }
-        return true;
-    }
-
-
-    //当填写账户后，提交异步请求检查是否重复
-    $("#floginacct").change(function () {
-        $.ajax({
-            url:"${APP_PATH}/user/doRepeatCheck.do",
-            type:"POST",
-            data:{"loginacct":$("#floginacct").val()},
-            success:function (data) {
-                if(data.success){
-                    $("#addBtn").attr("repeatTest","success");
-                }else{
-                    $("#addBtn").attr("repeatTest","fail");
-                    layer.msg(data.message,{time:1000,icon:5,anim:5});
-                }
-            }
-        });
-    });
-
 
 
     //重置按钮

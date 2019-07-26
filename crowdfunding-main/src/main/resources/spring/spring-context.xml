@@ -45,7 +45,7 @@
 
     <!--扫描含有dao接口的包并交由Spring容器创建管理 -->
     <bean id="scannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.itpzy.crowdfunding.potal.dao,com.itpzy.crowdfunding.manager.dao"></property>
+        <property name="basePackage" value="com.itpzy.crowdfunding.manager.dao,com.itpzy.crowdfunding.potal.dao"></property>
     </bean>
 
     <!--线程安全的SqlSession -->
@@ -60,7 +60,6 @@
     <!--配置要扫描的包，排除Controller注解的类 -->
     <context:component-scan base-package="com.itpzy.crowdfunding.*" >
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"></context:exclude-filter>
-
     </context:component-scan>
 
     <!--配置事务管理器 -->
@@ -72,6 +71,7 @@
     <tx:advice id="tx-advice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="select*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
             <tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" rollback-for="java.lang.Exception"/>
         </tx:attributes>
     </tx:advice>

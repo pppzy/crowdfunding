@@ -1,10 +1,13 @@
 package com.itpzy.crowdfunding.manager.controller;
 
+import com.itpzy.crowdfunding.bean.Role;
 import com.itpzy.crowdfunding.bean.User;
+import com.itpzy.crowdfunding.manager.service.RoleService;
 import com.itpzy.crowdfunding.manager.service.UserService;
 import com.itpzy.crowdfunding.util.AjaxResult;
 import com.itpzy.crowdfunding.util.Page;
 import com.itpzy.crowdfunding.util.StringUtil;
+import com.itpzy.crowdfunding.vo.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +27,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
 
     /**
@@ -57,7 +63,6 @@ public class UserController {
             e.printStackTrace();
             return AjaxResult.fail("查询失败"+e.getMessage());
         }
-
     }
 
     /**
@@ -153,7 +158,7 @@ public class UserController {
     public String toEdit(Integer id,Model model){
        User user =  userService.selectUserById(id);
         model.addAttribute("user",user);
-        return "/user/edit";
+        return "user/edit";
     }
 
     //编辑用户信息
@@ -186,7 +191,8 @@ public class UserController {
       }
     }
 
-    @RequestMapping(value = "toDelUserList",method = RequestMethod.POST)
+    //删除多个用户
+/*    @RequestMapping(value = "toDelUserList",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult toDelUserList(String idStr){
         //处理数据，转换为int类型数值并存入到list集合中
@@ -202,7 +208,59 @@ public class UserController {
         }else{
             return AjaxResult.fail("删除失败!");
         }
+    }*/
+     //删除多个用户
+    @RequestMapping(value = "toDelUserList",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult toDelUserList(Data userData){
+        int count = userService.deleteUserList(userData);
+        if(count==userData.getDatas().size()){
+            return AjaxResult.success("删除成功!");
+        }else{
+            return AjaxResult.fail("删除失败!");
+        }
+    }
 
+    //跳转到角色分配页面
+    @RequestMapping(value="toAssignRole")
+    public String toAssignRole(Integer id,Model model){
+        //1.查询出所有的角色集合
+        List<Role> roles =  roleService.selectAll();
+        //2.创建未分配角色的集合和已分配角色的集合
+        List<Role> assignUnRole = new ArrayList<>();
+        List<Role> assignRole = new ArrayList<>();
+        //3.根据id参数查询用户的对应的所有角色
+        List<Integer> roleIds = userService.selectRoleById(id);
+        //4.遍历所有的角色集合
+        for (Role role : roles) {
+            int roleId = role.getId();
+            if(roleIds.contains(roleId)){
+                assignRole.add(role);
+            }else{
+                assignUnRole.add(role);
+            }
+        }
+        model.addAttribute("assignRole",assignRole);
+        model.addAttribute("assignUnRole",assignUnRole);
+        return "user/assignRole";
+    }
+
+    //分配角色
+    @RequestMapping(value = "doAssignRole")
+    @ResponseBody
+    public AjaxResult doAssignRole(Integer userId,Data datas){
+      int count =  userService.doAssignRole(userId,datas);
+
+        return AjaxResult.success("分配角色成功!");
+    }
+
+    //移除分配角色
+    @RequestMapping(value = "doAssignUnRole")
+    @ResponseBody
+    public AjaxResult doAssignUnRole(Integer userId,Data datas){
+        int count =  userService.doAssignUnRole(userId,datas);
+
+        return AjaxResult.success("移除分配的角色成功!");
     }
 
 

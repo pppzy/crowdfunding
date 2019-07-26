@@ -6,12 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" %>
-<html>
-<head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8">
-    <title>maintop</title>
-</head>
-<body>
 <li style="padding-top:8px;">
     <div class="btn-group">
         <button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
@@ -30,5 +24,4 @@
         <span class="glyphicon glyphicon-question-sign"></span> 帮助
     </button>
 </li>
-</body>
-</html>
+

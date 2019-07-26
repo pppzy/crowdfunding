@@ -13,15 +13,14 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="Permission">
-    insert into t_permission (id, pid, name, 
+    insert into t_permission ( pid, name,
       icon, url)
-    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+    values  (#{pid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
       #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="Permission">
     update t_permission
-    set pid = #{pid,jdbcType=INTEGER},
-      name = #{name,jdbcType=VARCHAR},
+    set name = #{name,jdbcType=VARCHAR},
       icon = #{icon,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
@@ -34,5 +33,38 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select id, pid, name, icon, url
     from t_permission
+  </select>
+
+  <select id="queryParentPermission" resultMap="BaseResultMap">
+     select * from t_permission where pid is null;
+  </select>
+
+  <select id="queryPermissionByPid" parameterType="int" resultMap="BaseResultMap">
+    select * from t_permission where pid = #{id};
+  </select>
+
+  <select id="selectAllIcons" resultMap="BaseResultMap">
+    select DISTINCT icon from t_permission where icon is not null ;
+  </select>
+
+  <select id="queryRepeatName" parameterType="string" resultType="int">
+    select count(1) from t_permission where name = #{name};
+  </select>
+
+  <select id="queryPermissionByUser" parameterType="int" resultMap="BaseResultMap">
+      SELECT DISTINCT(tp.`id`),tp.`pid`,tp.`name`,tp.`icon`,tp.`url` FROM t_user
+      INNER JOIN t_user_role
+      ON t_user.`id`=t_user_role.`userid`
+      INNER JOIN t_role
+      ON t_role.`id` = t_user_role.`roleid`
+      INNER JOIN t_role_permission
+      ON t_role_permission.`roleid` = t_role.`id`
+      INNER JOIN t_permission tp
+      ON tp.`id`=t_role_permission.`permissionid`
+      WHERE t_user.id= #{id} order by tp.id;
+  </select>
+
+  <select id="queryAllUrl" resultType="string">
+    select url from t_permission;
   </select>
 </mapper>

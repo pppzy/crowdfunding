@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: ppp
-  Date: 2019/7/10
-  Time: 21:23
+  Date: 2019/7/13
+  Time: 16:27
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
@@ -63,17 +63,8 @@
                 <div class="panel-body">
                     <form id="editForm" role="form">
                         <div class="form-group">
-                            <label for="floginacct">登陆账号</label>
-                            <p class="form-control-static" id="floginacct">${requestScope.user.loginacct}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="fusername">用户名称</label>
-                            <input type="text" class="form-control" id="fusername" value="${requestScope.user.username}">
-                        </div>
-                        <div class="form-group">
-                            <label for="femail">邮箱地址</label>
-                            <input type="email" class="form-control" id="femail" value="${requestScope.user.email}">
-                            <p class="help-block label label-warning">请输入合法的邮箱地址, 格式为： xxxx@xxxx.com</p>
+                            <label for="fname">角色名称</label>
+                            <input type="text" class="form-control" id="fname"  placeholder="请输入角色名称">
                         </div>
                         <button id="editBtn" type="button" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i> 修改</button>
                         <button id="resetBtn" type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
@@ -126,68 +117,4 @@
             }
         });
     });
-
-    //编辑按钮
-    $("#editBtn").click(function () {
-       //1.先进行数据校验
-       var flag = edit_form_check();
-       if(!flag){
-           return false;
-       }
-       //2.发送异步请求
-       $.ajax({
-           type:"POST",
-           url:"${APP_PATH}/user/toEditUser.do",
-           data:{
-               "username":$("#fusername").val(),
-               "email":$("#femail").val(),
-               "id":"${user.id}"
-           },
-           success:function (data) {
-               if(data.success){
-                   layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
-                       window.location.href = "${APP_PATH}/user/toIndex.htm";
-                   });
-               }else{
-                   layer.msg(data.message,{time:1000,icon:5,shift:5});
-               }
-           },
-           error:function () {
-               layer.msg("处理失败!",{time:1000,icon:5,shift:5});
-           }
-       })
-    });
-
-    //重置按钮
-    $("#resetBtn").click(function () {
-        $("#editForm")[0].reset();
-    });
-
-    //客户端数据校验
-    function edit_form_check() {
-        //1.对用户名称进行校验
-        var username = $("#fusername").val();
-        var username_regex = /(^[a-zA-Z0-9_-]{5,16}$)|(^[\u2E80-\u9FFF]{3,8})/;
-        var username_flag = username_regex.test(username);
-        if(!username_flag){
-            layer.msg("用户名称格式不正确，必须为5-16个字母数字组成或3-8个中文字",{time:1000,icon:5,shift:5});
-            return false;
-        }
-
-        //2.对邮箱进行校验
-        var email = $("#femail").val();
-        var email_regex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
-        var email_flag = email_regex.test(email);
-        if(!email_flag){
-            layer.msg("邮箱格式不正确",{time:1000,icon:5,shift:5});
-            return false;
-        }
-        return true;
-    }
-
-
-
 </script>
-</body>
-</html>
-

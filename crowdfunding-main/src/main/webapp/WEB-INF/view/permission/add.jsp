@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -56,25 +57,29 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <ol class="breadcrumb">
                 <li><a href="#">首页</a></li>
-                <li><a href="#">数据列表</a></li>
+                <li><a href="#">权限列表</a></li>
                 <li class="active">新增</li>
             </ol>
             <div class="panel panel-default">
-                <div class="panel-heading">表单数据<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-heading">权限表单<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
                     <form id="addForm" role="form">
                         <div class="form-group">
-                            <label for="floginacct">登陆账号</label>
-                            <input type="text" class="form-control" id="floginacct" placeholder="请输入登陆账号">
+                            <label for="fname">权限名称</label>
+                            <input type="text" class="form-control" id="fname" placeholder="请输入名称">
                         </div>
                         <div class="form-group">
-                            <label for="fusername">用户名称</label>
-                            <input type="text" class="form-control" id="fusername" placeholder="请输入用户名称">
+                            <label for="furl">权限路径</label>
+                            <input type="text" class="form-control" id="furl" placeholder="请输入路径">
                         </div>
                         <div class="form-group">
-                            <label for="femail">邮箱地址</label>
-                            <input type="email" class="form-control" id="femail" placeholder="请输入邮箱地址">
-                            <p class="help-block label label-warning">请输入合法的邮箱地址, 格式为： xxxx@xxxx.com</p>
+                            <label >权限图标选择</label>
+                            <c:forEach items="${requestScope.list}" var="permission">
+                                <label class="radio-inline">
+                                    <input type="radio" name="icon"  value="${permission.icon}">
+                                    <span class="${permission.icon}"></span>
+                                </label>
+                            </c:forEach>
                         </div>
                         <button id="addBtn" type="button" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 新增</button>
                         <button id="resetBtn"  type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
@@ -114,6 +119,7 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH}/script/docs.min.js"></script>
 <script src="${APP_PATH}/jquery/layer/layer.js"></script>
+<script src="${APP_PATH}/script/menu.js"></script>
 <script type="text/javascript">
     $(function () {
         $(".list-group-item").click(function(){
@@ -126,6 +132,7 @@
                 }
             }
         });
+        showMenu();
     });
 
     $("#addBtn").click(function () {
@@ -143,17 +150,18 @@
         //3.发送异步请求向数据库添加用户
         $.ajax({
             type:"POST",
-            url:"${APP_PATH}/user/doAddUser.do",
+            url:"${APP_PATH}/permission/doAddPermission.do",
             data:{
-               "loginacct":$("#floginacct").val(),
-               "username" :$("#fusername").val(),
-                "email" :$("#femail").val()
+               "name":$("#fname").val(),
+               "url" :$("#furl").val(),
+                "pid" :"${param.id}",
+                "icon":$("input:checked").val()
             },
             dataType:"JSON",
             success:function (data) {
                 if(data.success){
                     layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
-                        window.location.href="${APP_PATH}/user/toIndex.do";
+                        window.location.href="${APP_PATH}/permission/toIndex.htm";
                     })
 
                 }else{
@@ -170,42 +178,34 @@
     });
     //客户端表单校验方法
     function add_form_check(){
-        //1.对账户进行校验
-        var loginacct = $("#floginacct").val();
-        var acct_regex = /^[a-zA-Z0-9_-]{5,16}$/;
-        var acct_flag =acct_regex.test(loginacct);
-        if(!acct_flag){
-            layer.msg("账户格式不正确，必须为5-16个字母或数字组成", {time:1000, icon:5, shift:5});
+        //1.对权限名称进行校验
+        var name = $("#fname").val();
+        var name_regex = /(^[a-zA-Z0-9_-]{5,16}$)|(^[\u2E80-\u9FFF]{3,8})/;
+        var name_flag =name_regex.test(name);
+        if(!name_flag){
+            layer.msg("账户格式不正确，必须为5-16个字母数字或3-8个中文字", {time:1000, icon:5, shift:5});
             return false;
         }
 
-        //2.对用户名称进行校验
-        var username = $("#fusername").val();
-        var username_regex = /(^[a-zA-Z0-9_-]{5,16}$)|(^[\u2E80-\u9FFF]{3,8})/;
-        var username_flag = username_regex.test(username);
-        if(!username_flag){
-            layer.msg("用户名称格式不正确，必须为5-16个字母数字组成或3-8个中文字",{time:1000,icon:5,shift:5});
+        //2.对路径进行校验
+        var url = $("#furl").val();
+        var url_regex = /(^[a-zA-Z0-9_/-]{5,16}$)/;
+        var url_flag = url_regex.test(url);
+        if(!url_flag){
+            layer.msg("路径格式不正确",{time:1000,icon:5,shift:5});
             return false;
         }
 
-        //3.对邮箱进行校验
-        var email = $("#femail").val();
-        var email_regex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
-        var email_flag = email_regex.test(email);
-        if(!email_flag){
-            layer.msg("邮箱格式不正确",{time:1000,icon:5,shift:5});
-            return false;
-        }
         return true;
     }
 
 
     //当填写账户后，提交异步请求检查是否重复
-    $("#floginacct").change(function () {
+    $("#fname").change(function () {
         $.ajax({
-            url:"${APP_PATH}/user/doRepeatCheck.do",
+            url:"${APP_PATH}/permission/doRepeatCheck.do",
             type:"POST",
-            data:{"loginacct":$("#floginacct").val()},
+            data:{"name":$("#fname").val()},
             success:function (data) {
                 if(data.success){
                     $("#addBtn").attr("repeatTest","success");

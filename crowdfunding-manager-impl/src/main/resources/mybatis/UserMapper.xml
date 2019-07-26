@@ -86,6 +86,33 @@
     select count(1) from t_user where loginacct=#{loginacct};
   </select>
 
+  <delete id="deleteBatchUser"  >
+    delete from t_user
+    <where>
+      <foreach collection="userdata.datas" open="id in (" close=")" separator="," item="user">
+        #{user.id}
+      </foreach>
+    </where>
+  </delete>
 
+  <select id="selectRoleById" parameterType="int" resultType="int">
+     SELECT roleid FROM t_user_role WHERE userid =#{id};
+  </select>
 
+  <insert id="doAssignRole" >
+    <foreach collection="datas.ids" item="roleId">
+      INSERT into t_user_role (userid,roleid) values(#{userId},#{roleId});
+    </foreach>
+  </insert>
+
+  <delete id="doAssignUnRole" >
+     delete from t_user_role where userid=#{userId} and roleid
+     <foreach collection="datas.ids" item="roleId" open="in (" close=")" separator=",">
+       #{roleId}
+     </foreach>
+  </delete>
+
+  <insert id="doAssignBaseRole" >
+      INSERT into t_user_role (userid,roleid) values(#{userId},#{roleId});
+  </insert>
 </mapper>

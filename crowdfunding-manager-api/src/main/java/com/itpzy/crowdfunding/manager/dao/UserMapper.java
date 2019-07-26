@@ -1,6 +1,8 @@
 package com.itpzy.crowdfunding.manager.dao;
 
 import com.itpzy.crowdfunding.bean.User;
+import com.itpzy.crowdfunding.vo.Data;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -32,4 +34,18 @@ public interface UserMapper {
     //查询检查账号是否重复
     int selectRepeatUser(String loginacct);
 
+    //批量删除用户操作
+    int deleteBatchUser(@Param("userdata") Data datas);
+
+    //根据用户id查询对应的角色id
+    List<Integer> selectRoleById(Integer id);
+
+    //根据用户id给分配角色
+    int doAssignRole(@Param("userId") Integer userId, @Param("datas") Data datas);
+
+    //根据用户id移除用户下的角色
+    int doAssignUnRole(@Param("userId") Integer userId, @Param("datas") Data datas);
+
+    //为新增用户分配最基本的角色
+    int doAssignBaseRole(@Param("userId") Integer id, @Param("roleId") int i);
 }

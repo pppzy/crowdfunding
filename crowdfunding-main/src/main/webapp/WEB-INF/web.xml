@@ -42,10 +42,8 @@
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
-        <!--
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
-        -->
     </filter-mapping>
 
 
@@ -56,8 +54,9 @@
     </filter>
     <filter-mapping>
         <filter-name>hiddenHttpMethodFilter</filter-name>
-        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
+
 
 
     <!--配置核心处理器 -->

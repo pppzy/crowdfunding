@@ -24,8 +24,6 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"></context:include-filter>
     </context:component-scan>
 
-    <!--开启SpringMVC对注解支持 -->
-    <context:annotation-config />
     <!-- 字符串字符编码转换 -->
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -47,7 +45,7 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-  <!--  <mvc:annotation-driven></mvc:annotation-driven> -->
+
 
     <!--配置视图解析器 -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -60,7 +58,7 @@
         <property name="exceptionMappings">
             <props>
                 <prop key="java.lang.Exception">error/error</prop>
-                <prop key="com.itpzy.crowdfunding.util.DoLoginException">login</prop>
+                <prop key="com.itpzy.crowdfunding.exception.DoLoginException">login</prop>
             </props>
         </property>
     </bean>
@@ -73,6 +71,12 @@
         <property name="maxUploadSize" value="2097152"/>
         <property name="resolveLazily" value="true"/>
     </bean>
+
+    <!--设置拦截器 -->
+    <mvc:interceptors>
+        <bean id="loginInterceptor" class="com.itpzy.crowdfunding.interceptor.LoginInterceptor"></bean>
+        <bean id="permissionInterceptor" class="com.itpzy.crowdfunding.interceptor.PermissionInterceptor"></bean>
+    </mvc:interceptors>
 
 
 
