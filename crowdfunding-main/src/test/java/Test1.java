@@ -16,6 +16,7 @@ public class Test1 {
     @Autowired
     private SqlSessionTemplate sqlSessionTemplate;
 
+
     /**
      * 测试：用于向表中增加100条数据
      */
