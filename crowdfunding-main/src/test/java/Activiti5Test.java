@@ -1,3 +1,5 @@
+import com.itpzy.crowdfunding.activitiListener.NoListener;
+import com.itpzy.crowdfunding.activitiListener.YesListener;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
@@ -11,18 +13,208 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:spring/spring-*.xml"})
 public class Activiti5Test {
 
-    private ApplicationContext ac = new ClassPathXmlApplicationContext("spring/spring-*.xml");
+    @Autowired
+    private ProcessEngine processEngine;
 
-    private ProcessEngine processEngine = ac.getBean(ProcessEngine.class);
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private RepositoryService repositoryService;
+
+    @Autowired
+    private HistoryService historyService;
+
+
+
+
+    //完成监听器流程中的任务
+    @Test
+    public void test25(){
+        List<Task> list = taskService.createTaskQuery().list();
+
+
+        Map<String,Object> dataMap = new HashMap<>();
+        dataMap.put("flag","false");
+        dataMap.put("yesListener",new YesListener());
+        dataMap.put("noListener",new NoListener());
+        for (Task task : list) {
+            System.out.println(task);
+            taskService.complete(task.getId(),dataMap);
+        }
+
+    }
+
+    //启动监听器流程实例
+    @Test
+    public void test24(){
+        ProcessDefinition listenerTest1 = repositoryService.createProcessDefinitionQuery().processDefinitionKey("listenerTest1").latestVersion().singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(listenerTest1.getId());
+        System.out.println(processInstance);
+    }
+
+
+    //部署流程监听器测试
+    @Test
+    public void test23(){
+        Deployment deploy = repositoryService.createDeployment().addClasspathResource("myProcess10.bpmn").deploy();
+        System.out.println(deploy);
+    }
+
+
+    @Test
+    public void test22(){
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        List<Task> zhangsan = taskQuery.taskAssignee("zhangsan").list();
+        if(zhangsan.size()>0){
+            for (Task task : zhangsan) {
+                taskService.complete(task.getId());
+            }
+        }
+
+
+        TaskQuery taskQuery1 = taskService.createTaskQuery();
+        List<Task> list = taskQuery1.list();
+        for (Task task : list) {
+            System.out.println(task);
+           taskService.complete(task.getId());
+        }
+
+    }
+
+    @Test
+    public void test21(){
+      /*  Map<String,Object> dataMap = new HashMap<>();
+        dataMap.put("days",2);
+        dataMap.put("money",6000);*/
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("myProcessMail").latestVersion().singleResult();
+        System.out.println(processDefinition.getKey());
+        ProcessInstance myProcessTest3 = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+        System.out.println(myProcessTest3);
+    }
+
+
+    //部署并定义并行网关
+    @Test
+    public void test20(){
+        Deployment deploy = repositoryService.createDeployment().addClasspathResource("myProcess9.bpmn").deploy();
+        System.out.println(deploy);
+        System.out.println("---------------");
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        ProcessDefinition myProcessTest2 = processDefinitionQuery.latestVersion().processDefinitionKey("myProcessMail").singleResult();
+        System.out.println(myProcessTest2);
+    }
+
+
+
+
+
+    //完成任务
+    @Test
+    public void test19(){
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        List<Task> zhangsan = taskQuery.taskAssignee("zhangsan").list();
+        for (Task task : zhangsan) {
+            System.out.println(task);
+            taskService.complete(task.getId());
+        }
+
+
+
+        TaskQuery taskQuery1 = taskService.createTaskQuery();
+        List<Task>  lisi = taskQuery1.taskAssignee("lisi").list();
+        for (Task task : lisi) {
+            System.out.println(task);
+            taskService.complete(task.getId());
+        }
+
+    }
+
+
+
+    //启动并行网关流程实例
+    @Test
+    public void test18(){
+
+        ProcessInstance myProcessTest2 = runtimeService.startProcessInstanceByKey("myProcessTest2");
+        System.out.println(myProcessTest2);
+    }
+
+
+    //部署并定义并行网关
+    @Test
+    public void test17(){
+        Deployment deploy = repositoryService.createDeployment().addClasspathResource("myProcess7.bpmn").deploy();
+        System.out.println(deploy);
+        System.out.println("---------------");
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        ProcessDefinition myProcessTest2 = processDefinitionQuery.latestVersion().processDefinitionKey("myProcessTest2").singleResult();
+        System.out.println(myProcessTest2);
+    }
+
+
+
+    //完成任务
+    @Test
+    public void test16(){
+        TaskService taskService = processEngine.getTaskService();
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        List<Task> zhangsan = taskQuery.taskAssignee("zhangsan").list();
+        for (Task task : zhangsan) {
+            System.out.println(task);
+            taskService.setVariable(task.getId(),"days",8);
+            taskService.complete(task.getId());
+        }
+
+        List<Task> lisi = taskQuery.taskAssignee("lisi").list();
+        for (Task task : lisi) {
+            System.out.println(task);
+            taskService.complete(task.getId());
+        }
+
+    }
+
+
+    //启动流程实例
+    @Test
+    public void test15(){
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        ProcessDefinitionQuery processDefinitionQuery = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        ProcessDefinition myProcessTest1 = processDefinitionQuery.processDefinitionKey("myProcessTest1").latestVersion().singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(myProcessTest1.getId());
+        System.out.println(processInstance);
+    }
+
+
+    //1.排他网关测试： 部署并定义流程
+    @Test
+    public void test14(){
+        RepositoryService repositoryService = processEngine.getRepositoryService();
+        Deployment deploy = repositoryService.createDeployment().addClasspathResource("myProcess6.bpmn").deploy();
+
+        System.out.println(deploy);
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        ProcessDefinition processDefinition = processDefinitionQuery.latestVersion().singleResult();
+        System.out.println(processDefinition);
+    }
+
 
 
     //3.完成任务

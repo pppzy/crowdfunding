@@ -54,7 +54,7 @@
         </div>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="remember-me"> 记住我
+                <input id="rememberBox" type="checkbox" value="remember-me"> 记住我
             </label>
             <br>
             <label>
@@ -73,7 +73,6 @@
 <script>
     function dologin() {
        // $("#loginForm").submit();
-        var loadingIndex ;
         //1.校验表单数据信息是否符合格式
         var flag = form_login_check();
         if(flag!=true){
@@ -82,18 +81,31 @@
         //2.序列化表单，获取表单数据
         var dataform =  $("#loginForm").serialize();
 
+        var type = $("#ftype option:selected").val();
+
+        var flag = $("#rememberBox:checked").prop("checked");
+
+        var rememberStatus = flag?1:0;
+
         //3.提交异步登录请求
         $.ajax({
             url:"${APP_PATH}/doLogin.do",
-            data:dataform,
+            data:dataform+"&rememberStatus="+rememberStatus,
             type:"POST",
             dataType:"JSON",
             success:function (data) {
-                layer.close(loadingIndex);
                 if(data.success){
-                    layer.msg("登录成功!", {time:1000, icon:16},function () {
-                        window.location.href = "${APP_PATH}/main.htm";
-                    });
+                    if("member"==type){
+                        layer.msg("登录成功!", {time:1000, icon:16},function () {
+                            window.location.href = "${APP_PATH}/memberIndex.htm";
+                        });
+                    }else{
+                        layer.msg("登录成功!", {time:1000, icon:16},function () {
+                            window.location.href = "${APP_PATH}/main.htm";
+                        });
+                    }
+
+
                 }else{
                     layer.msg(data.message, {time:1000, icon:5, shift:6}); //弹出时间，图标，特效
                 }

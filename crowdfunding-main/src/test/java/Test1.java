@@ -37,6 +37,14 @@ public class Test1 {
 
     }
 
+    @Test
+    public void test23(){
+        String pzy = MD5Util.digest("pzy");
+        System.out.println(pzy);
+        System.out.println(pzy.equals("0288474006bfb2b3c845f37829c450b8")?"Yes":"NO");
+
+    }
+
 
 
 

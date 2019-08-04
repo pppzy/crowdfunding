@@ -53,7 +53,7 @@ public class AdvertController {
     }
 
     //同步的文件上传方式
-    @RequestMapping(value = "upload")
+  /*  @RequestMapping(value = "upload")
     public String upload(HttpServletRequest request, Advertisement advert, HttpSession session) throws IOException {
         MultipartRequest request1 = (MultipartRequest) request;
         MultipartFile upload = request1.getFile("upload");
@@ -73,5 +73,36 @@ public class AdvertController {
 
         int count = advertService.insert(advert);
         return "redirect:/advert/index.htm";
+    }*/
+
+    //异步方式的文件上传方式
+    @RequestMapping(value = "upload")
+    @ResponseBody
+    public AjaxResult upload(HttpServletRequest request, Advertisement advert, HttpSession session) throws IOException {
+        MultipartRequest request1 = (MultipartRequest) request;
+        MultipartFile upload = request1.getFile("upload");
+        String realPath = session.getServletContext().getRealPath("/advert");
+        String originalFilename = upload.getOriginalFilename();
+
+        String fileName = originalFilename.substring(originalFilename.indexOf("."));
+        String uuid = UUID.randomUUID().toString();
+        String iconPath = uuid+fileName;
+        String filePath = realPath+"//pic//"+iconPath;
+        upload.transferTo(new File(filePath));
+
+        advert.setIconpath(iconPath);
+        advert.setStatus("1");
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
+        advert.setUserid(user.getId());
+
+        int count = advertService.insert(advert);
+        if(count==1){
+            return AjaxResult.success("提交表单成功!");
+        }else{
+            return AjaxResult.fail("提交表单数据失败!");
+        }
+
     }
+
+
 }

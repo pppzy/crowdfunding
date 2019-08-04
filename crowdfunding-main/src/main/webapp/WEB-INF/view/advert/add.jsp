@@ -63,7 +63,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">广告<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
-                    <form id="addForm" role="form" method="post" action="${APP_PATH}/advert/upload.do" enctype="multipart/form-data">
+                    <form id="addForm" role="form" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="fname">广告名</label>
                             <input type="text" class="form-control" id="fname" name="name" placeholder="请输入名称">
@@ -114,6 +114,7 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH}/script/docs.min.js"></script>
 <script src="${APP_PATH}/jquery/layer/layer.js"></script>
+<script src="${APP_PATH}/jquery/jqueryForm/jquery-form.min.js"></script>
 
 <script type="text/javascript">
     $(function () {
@@ -130,9 +131,32 @@
 
     });
     //同步方式提交表单
-    $("#addBtn").click(function () {
+ /*   $("#addBtn").click(function () {
         $("#addForm").submit();
-    });
+    });*/
+
+
+  $("#addBtn").click(function () {
+      var options = {
+          url:"${APP_PATH}/advert/upload.do",
+          success: function (data) {
+              if(data.success){
+                  layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
+                      window.location.href = "${APP_PATH}/advert/index.htm";
+                  })
+              }else{
+                  layer.msg(data.message,{time:1000,icon:5,shift:5});
+              }
+          },
+      }
+      $("#addForm").ajaxSubmit(options);
+
+  });
+
+
+
+
+
 
 
     //重置按钮

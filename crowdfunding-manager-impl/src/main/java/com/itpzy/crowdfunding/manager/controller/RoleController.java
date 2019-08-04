@@ -123,5 +123,4 @@ public class RoleController {
             return AjaxResult.fail(e.getMessage());
         }
     }
-
 }

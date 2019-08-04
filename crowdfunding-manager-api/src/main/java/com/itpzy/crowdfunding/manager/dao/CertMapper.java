@@ -14,4 +14,7 @@ public interface CertMapper {
     List<Cert> selectAll();
 
     int updateByPrimaryKey(Cert record);
+
+    //根据账户类型和中间表，查询出所对应的需要上传的资质
+    List<Cert> selectCertByAcctType(String accttype);
 }

@@ -2,16 +2,15 @@ package com.itpzy.crowdfunding.potal.dao;
 
 import com.itpzy.crowdfunding.bean.Member;
 
-import java.util.List;
+import java.util.Map;
 
 public interface MemberMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(Member record);
+    int updateLoginAcctByPrimaryKey(Member record);
 
-    Member selectByPrimaryKey(Integer id);
+    Member selectUser(Map<String, Object> dataMap);
 
-    List<Member> selectAll();
+    int selectCount(Map<String, Object> dataMap);
 
-    int updateByPrimaryKey(Member record);
+    void updateBaseInfo(Member loginMember);
 }

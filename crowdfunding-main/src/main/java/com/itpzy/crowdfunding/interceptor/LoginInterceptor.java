@@ -1,5 +1,6 @@
 package com.itpzy.crowdfunding.interceptor;
 
+import com.itpzy.crowdfunding.bean.Member;
 import com.itpzy.crowdfunding.bean.User;
 import com.itpzy.crowdfunding.util.Const;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -25,7 +26,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return true;
         }else{
             User user = (User)request.getSession().getAttribute(Const.LOGIN_USER);
-            if(user!=null){
+            Member member=(Member)request.getSession().getAttribute(Const.LOGIN_MEMBER);
+            if(user!=null||member!=null){
                 return true;
             }else{
                 request.getSession().setAttribute("loginMsg","请登录用户后再访问!");

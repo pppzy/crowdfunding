@@ -12,10 +12,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="MemberCert">
-    insert into t_member_cert (id, memberid, certid, 
+    insert into t_member_cert (memberid, certid,
       iconpath)
-    values (#{id,jdbcType=INTEGER}, #{memberid,jdbcType=INTEGER}, #{certid,jdbcType=INTEGER}, 
-      #{iconpath,jdbcType=VARCHAR})
+    values ( #{memberid}, #{certid},
+      #{iconpath})
   </insert>
   <update id="updateByPrimaryKey" parameterType="MemberCert">
     update t_member_cert
