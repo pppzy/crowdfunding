@@ -101,11 +101,11 @@
                                 </c:when>
 
                                 <c:when test="${sessionScope.member.authstatus==1}">
-                                    <span class="label label-warning" style="cursor:pointer;" onclick="window.location.href='${APP_PATH}/member/apply.htm'">未实名认证</span>
+                                    <span class="label label-warning" style="cursor:pointer;" onclick="message()">实名认证申请中</span>
                                 </c:when>
 
                                 <c:otherwise>
-                                    <span class="label label-success" style="cursor:pointer;" onclick="window.location.href='${APP_PATH}/member/apply.htm'">未实名认证</span>
+                                    <span class="label label-success" style="cursor:pointer;" onclick="finishMessage()">已实名认证</span>
                                 </c:otherwise>
 
                             </c:choose>
@@ -165,6 +165,7 @@
 <script src="${APP_PATH}/script/docs.min.js"></script>
 <script src="${APP_PATH}/script/back-to-top.js"></script>
 <script src="${APP_PATH}/script/echarts.js"></script>
+<script src="${APP_PATH}/jquery/layer/layer.js"></script>
 <script>
     $('#myTab a').click(function (e) {
         e.preventDefault()
@@ -347,8 +348,22 @@
         ]
     };
 
+
     // 使用刚指定的配置项和数据显示图表。
     myChart2.setOption(option2);
+
+    function message() {
+        layer.confirm("实名认证正在审核中",{icon:3,title:"提示"},function (index) {
+
+            layer.close(index);
+        },function (index) {
+            layer.close(index);
+        });
+    }
+
+    function finishMessage() {
+        layer.msg("您的实名认证已通过!",{time:1000,icon:6,shift:5});
+    }
 </script>
 </body>
 </html>

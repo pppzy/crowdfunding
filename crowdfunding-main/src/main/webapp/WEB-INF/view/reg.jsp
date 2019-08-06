@@ -33,24 +33,28 @@
 
 <div class="container">
 
-    <form class="form-signin" role="form">
+    <form id="regForm" class="form-signin" role="form">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户注册</h2>
         <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control" id="inputSuccess4" placeholder="请输入登录账号" autofocus>
+            <input type="text" class="form-control" id="floginacct" name="loginacct" placeholder="请输入登录账号" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control" id="inputSuccess4" placeholder="请输入登录密码" style="margin-top:10px;">
+            <input type="text" class="form-control" id="fuserpswd" name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control" id="inputSuccess4" placeholder="请输入邮箱地址" style="margin-top:10px;">
+            <input type="text" class="form-control" id="fusername" name="username" placeholder="请输入用户名" style="margin-top:10px;">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-success has-feedback">
+            <input type="text" class="form-control" id="femail" name="email" placeholder="请输入邮箱地址" style="margin-top:10px;">
             <span class="glyphicon glyphicon glyphicon-envelope form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <select class="form-control" >
-                <option>企业</option>
-                <option>个人</option>
+            <select id="usertype" class="form-control" >
+                <option value="1">企业</option>
+                <option value="0">个人</option>
             </select>
         </div>
         <div class="checkbox">
@@ -58,13 +62,49 @@
                 忘记密码
             </label>
             <label style="float:right">
-                <a href="login.html">我有账号</a>
+                <a href="${APP_PATH}/login.htm">我有账号</a>
             </label>
         </div>
-        <a class="btn btn-lg btn-success btn-block" href="member.html" > 注册</a>
+        <a class="btn btn-lg btn-success btn-block" onclick="javascript:uploadMember()" > 注册</a>
     </form>
 </div>
 <script src="${APP_PATH}/jquery/jquery-2.1.1.min.js"></script>
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
+<script src="${APP_PATH}/jquery/layer/layer.js"></script>
 </body>
+<script>
+
+    function uploadMember() {
+        var dataJson = {
+            'loginacct':$("#floginacct").val(),
+            'userpswd':$("#fuserpswd").val(),
+            'username':$("#fusername").val(),
+            'email':$("#femail").val(),
+            'usertype':$("#usertype option:selected").val()
+        }
+        var usertype =  $("select option:selected").val();
+        var loadIndex= -1;
+        $.ajax({
+            url:"${APP_PATH}/member/regMember.do",
+            data:dataJson,
+            beforeSend:function () {
+                 loadIndex= layer.msg("正在注册中!",{time:1000,icon:6,shift:5}) ;
+                return true;
+            },
+            success:function (data) {
+                layer.close(loadIndex);
+                if(data.success){
+                    layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
+                        window.location.href = "${APP_PATH}/login.htm";
+                    })
+                }else{
+                    layer.msg(data.message,{time:1000,icon:5,shift:5});
+                }
+            }
+
+        });
+    }
+
+
+</script>
 </html>

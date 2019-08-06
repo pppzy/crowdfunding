@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itpzy.crowdfunding.potal.dao.MemberMapper">
-
   <resultMap id="BaseResultMap" type="com.itpzy.crowdfunding.bean.Member">
     <id column="id" property="id"></id>
     <result property="loginacct" column="loginacct"/>
@@ -14,28 +13,42 @@
     <result column="cardnum" property="cardnum"/>
     <result property="accttype" column="accttype"/>
     <result column="telphone" property="telphone"/>
-
   </resultMap>
-
-
   <update id="updateLoginAcctByPrimaryKey" parameterType="Member">
-    update t_member
-    set
-      accttype = #{accttype}
-    where id = #{id};
+    update t_member set accttype = #{accttype} where id = #{id};
   </update>
-
   <select id="selectUser" resultType="Member">
     select * from t_member where loginacct=#{loginacct} and userpswd =#{userpswd};
   </select>
-
   <select id="selectCount" resultType="int">
     select count(1) from t_member where loginacct =#{loginacct};
   </select>
-
-
-  <update id="updateBaseInfo" parameterType="member">
+  <update id="updateBaseInfo" parameterType="Member">
     UPDATE t_member SET  realname = #{realname}, cardnum = #{cardnum},telphone=#{telphone} where id=#{id};
   </update>
+  <update id="updateEmail" parameterType="Member">
+    UPDATE t_member set email = #{email} where id=#{id} ;
+  </update>
+  <update id="updateStatus" parameterType="Member">
+    UPDATE t_member SET authstatus=#{authstatus} where id=#{id};
+  </update>
+  <insert id="insert" parameterType="Member" >
+    INSERT into t_member (loginacct,userpswd,username,email,authstatus,usertype) VALUES (#{loginacct},#{userpswd},#{username},#{email},'0',#{usertype});
+  </insert>
 
+  <select id="selectMemberByPiid" resultType="Member">
+    select * from t_member where id=(select memid from t_cert_form where piid = #{processInstanceId});
+  </select>
+
+  <select id="selectMemberById" resultType="Member">
+    select * from t_member where id =#{id};
+  </select>
+
+  <update id="passAudit" >
+    UPDATE t_member SET authstatus = '2' where id=#{id};
+  </update>
+
+  <update id="refuseAudit" >
+    UPDATE t_member SET authstatus = '0' where id=#{id};
+  </update>
 </mapper>

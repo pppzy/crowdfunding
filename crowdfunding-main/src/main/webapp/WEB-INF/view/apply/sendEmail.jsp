@@ -2,10 +2,10 @@
   Created by IntelliJ IDEA.
   User: ppp
   Date: 2019/8/4
-  Time: 14:40
+  Time: 20:09
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -37,7 +37,7 @@
                 <div id="navbar" class="navbar-collapse collapse" style="float:right;">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> ${sessionScope.member.username}<span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i>${sessionScope.member.username} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="member.html"><i class="glyphicon glyphicon-scale"></i> 会员中心</a></li>
                                 <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
@@ -59,26 +59,18 @@
     </div>
 
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#"><span class="badge">1</span> 基本信息</a></li>
-        <li role="presentation"><a href="#"><span class="badge">2</span> 资质文件上传</a></li>
-        <li role="presentation"><a href="#"><span class="badge">3</span> 邮箱确认</a></li>
+        <li role="presentation" ><a href="#"><span class="badge">1</span> 基本信息</a></li>
+        <li role="presentation" ><a href="#"><span class="badge">2</span> 资质文件上传</a></li>
+        <li role="presentation" class="active"><a href="#"><span class="badge">3</span> 邮箱确认</a></li>
         <li role="presentation"><a href="#"><span class="badge">4</span> 申请确认</a></li>
     </ul>
 
-    <form id="infoForm" role="form" style="margin-top:20px;">
+    <form role="form" style="margin-top:20px;">
         <div class="form-group">
-            <label for="fusername">真实名称</label>
-            <input type="text" class="form-control" id="fusername" name="realname" placeholder="请输入真实名称">
+            <label for="femail">邮箱地址</label>
+            <input type="text" class="form-control" id="femail" value="${sessionScope.member.email}" placeholder="请输入用于接收验证码的邮箱地址">
         </div>
-        <div class="form-group">
-            <label for="fcard">身份证号码</label>
-            <input type="text" class="form-control" id="fcard" name="cardnum" placeholder="请输入身份证号码">
-        </div>
-        <div class="form-group">
-            <label for="ftel">电话号码</label>
-            <input type="text" class="form-control" id="ftel" name="telphone" placeholder="请输入电话号码">
-        </div>
-        <button type="button" onclick="window.location.href='${APP_PATH}/member/toSelectAcctType.htm'" class="btn btn-default">上一步</button>
+        <button type="button" onclick="window.location.href='${APP_PATH}/member/toUploadCert.htm'" class="btn btn-default">上一步</button>
         <button id="addBtn" type="button"   class="btn btn-success">下一步</button>
     </form>
     <hr>
@@ -91,7 +83,7 @@
                     <a rel="nofollow" href="http://www.atguigu.com">关于我们</a> | <a rel="nofollow" href="http://www.atguigu.com">服务条款</a> | <a rel="nofollow" href="http://www.atguigu.com">免责声明</a> | <a rel="nofollow" href="http://www.atguigu.com">网站地图</a> | <a rel="nofollow" href="http://www.atguigu.com">联系我们</a>
                 </div>
                 <div class="copyRight">
-                    Copyright ?2017-2017 atguigu.com 版权所有
+                    Copyright ?2017-2017atguigu.com 版权所有
                 </div>
             </div>
 
@@ -109,27 +101,25 @@
     });
 
     $("#addBtn").click(function () {
-        var data = $("#infoForm").serialize();
 
         $.ajax({
-            url:"${APP_PATH}/member/basicInfo.do",
-            data:data,
-            type:"POST",
-            success:function (data) {
-                if(data.success){
-                    window.location.href = "${APP_PATH}/member/toUploadCert.htm";
-                }else{
-                    layer.msg(data.message,{time:1000,icon:5,shift:5});
-                }
+           url:"${APP_PATH}/member/sendEmail.do",
+           data:{
+               "email":$("form :text").val()
+           },
+           type:"POST",
+           success:function (data) {
+               if(data.success){
+                   window.location.href = "${APP_PATH}/member/toFinishEmail.htm"
+               }else{
+                   layer.msg(data.message,{time:1000,icon:5,shift:5});
+               }
 
-            }
+           }
 
 
-
-        })
+        });
     });
-
-
 
 
 </script>

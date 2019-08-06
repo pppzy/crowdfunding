@@ -18,31 +18,35 @@
     values (#{memid},'0',#{lastproc});
   </insert>
   <update id="updateByPrimaryKey" parameterType="MemberCert">
-    update t_member_cert
-    set memberid = #{memberid,jdbcType=INTEGER},
-      certid = #{certid,jdbcType=INTEGER},
-      iconpath = #{iconpath,jdbcType=VARCHAR}
-    where id = #{id}
+    update t_cert_form
+    set
+      piid=#{piid},
+      code=#{code},
+      lastproc=#{lastproc}
+    where memid=#{memid} and formstatus =0;
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select id, memberid, certid, iconpath
-    from t_member_cert
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, memberid, certid, iconpath
-    from t_member_cert
-  </select>
 
   <select id="selectByMemid" resultMap="BaseResultMap">
-    select * from t_cert_form where memid=#{memid};
+    select * from t_cert_form where memid=#{memid} and formstatus= '0' ;
   </select>
 
   <select id="updateLastProc" parameterType="CertForm">
       UPDATE t_cert_form
       SET lastproc = #{lastproc}
-      where id=#{id};
+      where id=#{id} and formstatus=0 ;
   </select>
+
+  <update id="updateFinish" parameterType="certForm">
+    UPDATE t_cert_form
+    SET  lastproc=#{lastproc}
+    where id=#{id}
+  </update>
+
+  <update id="passAudit" >
+    UPDATE t_cert_form SET formstatus='1' WHERE  memid =#{id} and formstatus='0';
+  </update>
+
+
 
 
 </mapper>

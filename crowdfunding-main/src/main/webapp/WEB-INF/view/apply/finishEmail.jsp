@@ -2,10 +2,10 @@
   Created by IntelliJ IDEA.
   User: ppp
   Date: 2019/8/4
-  Time: 14:40
+  Time: 21:28
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -59,27 +59,19 @@
     </div>
 
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#"><span class="badge">1</span> 基本信息</a></li>
-        <li role="presentation"><a href="#"><span class="badge">2</span> 资质文件上传</a></li>
-        <li role="presentation"><a href="#"><span class="badge">3</span> 邮箱确认</a></li>
-        <li role="presentation"><a href="#"><span class="badge">4</span> 申请确认</a></li>
+        <li role="presentation" ><a href="#"><span class="badge">1</span> 基本信息</a></li>
+        <li role="presentation" ><a href="#"><span class="badge">2</span> 资质文件上传</a></li>
+        <li role="presentation" ><a href="#"><span class="badge">3</span> 邮箱确认</a></li>
+        <li role="presentation" class="active"><a href="#"><span class="badge">4</span> 申请确认</a></li>
     </ul>
 
-    <form id="infoForm" role="form" style="margin-top:20px;">
+    <form role="form" style="margin-top:20px;">
         <div class="form-group">
-            <label for="fusername">真实名称</label>
-            <input type="text" class="form-control" id="fusername" name="realname" placeholder="请输入真实名称">
+            <label for="femail">验证码</label>
+            <input type="text" class="form-control" id="femail" name="code" placeholder="请输入你邮箱中接收到的验证码">
         </div>
-        <div class="form-group">
-            <label for="fcard">身份证号码</label>
-            <input type="text" class="form-control" id="fcard" name="cardnum" placeholder="请输入身份证号码">
-        </div>
-        <div class="form-group">
-            <label for="ftel">电话号码</label>
-            <input type="text" class="form-control" id="ftel" name="telphone" placeholder="请输入电话号码">
-        </div>
-        <button type="button" onclick="window.location.href='${APP_PATH}/member/toSelectAcctType.htm'" class="btn btn-default">上一步</button>
-        <button id="addBtn" type="button"   class="btn btn-success">下一步</button>
+        <button type="button"  class="btn btn-primary">重新发送验证码</button>
+        <button id="addBtn" type="button"   class="btn btn-success">申请完成</button>
     </form>
     <hr>
 </div> <!-- /container -->
@@ -109,27 +101,24 @@
     });
 
     $("#addBtn").click(function () {
-        var data = $("#infoForm").serialize();
 
         $.ajax({
-            url:"${APP_PATH}/member/basicInfo.do",
-            data:data,
+           url:"${APP_PATH}/member/finishEmail.do",
+            data:"code="+$("#femail").val(),
             type:"POST",
             success:function (data) {
-                if(data.success){
-                    window.location.href = "${APP_PATH}/member/toUploadCert.htm";
-                }else{
-                    layer.msg(data.message,{time:1000,icon:5,shift:5});
-                }
+               if(data.success){
+                   layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
+                       window.location.href = "${APP_PATH}/memberIndex.htm";
+                   })
+               }else{
+                   layer.msg(data.message,{time:1000,icon:5,shift:5});
+               }
+
 
             }
-
-
-
-        })
+        });
     });
-
-
 
 
 </script>

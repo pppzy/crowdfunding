@@ -6,6 +6,9 @@ import com.itpzy.crowdfunding.potal.service.MemberCertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class MemberCertServiceImpl implements MemberCertService {
 
@@ -15,5 +18,10 @@ public class MemberCertServiceImpl implements MemberCertService {
     @Override
     public int insert(MemberCert memberCert) {
         return memberCertMapper.insert(memberCert);
+    }
+
+    @Override
+    public  List<Map<String,Object>> selectById(Integer membId) {
+        return memberCertMapper.selectByMembid(membId);
     }
 }

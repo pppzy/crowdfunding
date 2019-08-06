@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: ppp
-  Date: 2019/7/10
-  Time: 9:44
+  Date: 2019/8/6
+  Time: 9:37
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
@@ -57,28 +57,42 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <ol class="breadcrumb">
                 <li><a href="#">首页</a></li>
-                <li><a href="#">广告管理</a></li>
+                <li><a href="#">数据列表</a></li>
                 <li class="active">新增</li>
             </ol>
             <div class="panel panel-default">
-                <div class="panel-heading">广告<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+                <div class="panel-heading">流程审核<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
-                    <form id="addForm" role="form" method="post" enctype="multipart/form-data">
+                    <form id="addForm" role="form">
                         <div class="form-group">
-                            <label for="fname">广告名</label>
-                            <input type="text" class="form-control" id="fname" name="name" placeholder="请输入名称">
+                            <label>会员名称</label>
+                            ${requestScope.member.username}
                         </div>
                         <div class="form-group">
-                            <label for="furl">广告路径</label>
-                            <input type="text" class="form-control" id="furl" name="url" placeholder="请输入路径">
+                            <label>身份证号</label>
+                            ${requestScope.member.cardnum}
                         </div>
                         <div class="form-group">
-                            <label for="fpic">上传图片</label>
-                            <input type="file" class="form-control" id="fpic" name="upload" placeholder="请插入图片">
-                            <img src="" style="display: none">
+                            <label>手机号</label>
+                            ${requestScope.member.telphone}
                         </div>
-                        <button id="addBtn" type="button" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 新增</button>
-                        <button id="resetBtn"  type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
+                        <div class="form-group">
+                            <label>邮箱地址</label>
+                            ${requestScope.member.email}
+                        </div>
+                        <c:forEach items="${requestScope.memberCert}" var="memberCert" >
+                            <label>${memberCert.name}</label>
+                            <br/>
+                            <img src="${APP_PATH}/advert/pic/${memberCert.iconpath}" >
+
+                            <hr>
+                            <br/>
+                        </c:forEach>
+                        <div>
+
+                        </div>
+                        <button id="passBtn" type="button" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 通过</button>
+                        <button id="refuseBtn"   type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 拒绝</button>
                     </form>
                 </div>
             </div>
@@ -115,8 +129,6 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH}/script/docs.min.js"></script>
 <script src="${APP_PATH}/jquery/layer/layer.js"></script>
-<script src="${APP_PATH}/jquery/jqueryForm/jquery-form.min.js"></script>
-
 <script type="text/javascript">
     $(function () {
         $(".list-group-item").click(function(){
@@ -129,61 +141,67 @@
                 }
             }
         });
-
     });
-    //同步方式提交表单
- /*   $("#addBtn").click(function () {
-        $("#addForm").submit();
-    });*/
+
+    var taskId = "${param.taskId}";
+    var memberId = "${param.membId}";
+
+    var jsonObj = {
+        'taskId':taskId,
+        'memberId':memberId
+
+    };
+    $("#passBtn").click(function () {
 
 
-  $("#addBtn").click(function () {
-      var options = {
-          url:"${APP_PATH}/advert/upload.do",
-          success: function (data) {
-              if(data.success){
-                  layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
-                      window.location.href = "${APP_PATH}/advert/index.htm";
-                  })
-              }else{
-                  layer.msg(data.message,{time:1000,icon:5,shift:5});
-              }
-          },
-      }
-      $("#addForm").ajaxSubmit(options);
 
-  });
+        $.ajax({
+            url:"${APP_PATH}/procaudit/doPass.do",
+            type:"POST",
+            data:jsonObj,
+            dataType:"json",
+            success:function (data) {
+                if(data.success){
+                    layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
+                        window.location.href = "${APP_PATH}/procaudit/index.htm";
+                    });
 
+                }else{
+                    layer.msg(data.message,{time:1000,icon:5,shift:5});
+                }
+            }
 
-    $("input:file").change(function(event){
-        // 获取当前选择的文件 event.target.files
-        var files = event.target.files, file;
-        if (files && files.length > 0) {
-            file = files[0];
-        }
-        // 判断上传文件的大小 file.size ，单位字节Byte
-        // 判断上传文件的类型 file.type
-        // 本地生成上传文件后的临时文件地址
-        var URL = window.URL || window.webkitURL;
-        var imgURL = URL.createObjectURL(file);
-
-        var imgObj = $(this).next();
-
-        imgObj.attr("src",imgURL);
-        imgObj.show();
+        });
     });
 
 
 
+    $("#refuseBtn").click(function () {
 
+        $.ajax({
+            url:"${APP_PATH}/procaudit/doRefuse.do",
+            type:"POST",
+            data:jsonObj,
+            dataType:"json",
+            success:function (data) {
+                if(data.success){
+                    layer.msg(data.message,{time:1000,icon:6,shift:5},function () {
+                        window.location.href = "${APP_PATH}/procaudit/index.htm";
+                    });
+                }else{
+                    layer.msg(data.message,{time:1000,icon:5,shift:5});
+                }
+            }
 
-    //重置按钮
-    $("#resetBtn").click(function () {
-        $("#addForm")[0].reset();
+        });
     });
+
+
+
 
 
 </script>
 </body>
 </html>
+
 

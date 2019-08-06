@@ -21,6 +21,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         noLoingUrl.add("/index.htm");
         noLoingUrl.add("/main.htm");
         noLoingUrl.add("/doLogin.do");
+        noLoingUrl.add("/member/regMember.do");
 
         if (noLoingUrl.contains(request.getServletPath())){
             return true;

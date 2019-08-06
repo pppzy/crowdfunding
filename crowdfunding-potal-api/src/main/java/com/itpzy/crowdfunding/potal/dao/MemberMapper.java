@@ -13,4 +13,20 @@ public interface MemberMapper {
     int selectCount(Map<String, Object> dataMap);
 
     void updateBaseInfo(Member loginMember);
+
+    void updateEmail(Member loginMember);
+
+    void updateStatus(Member loginMember);
+
+
+    int insert(Member member);
+
+    Member selectMemberByPiid(String processInstanceId);
+
+
+    Member selectMemberById(Integer membId);
+
+    void passAudit(int memberId);
+
+    void refuseAudit(int memberId);
 }

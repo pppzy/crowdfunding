@@ -33,4 +33,8 @@
     select id, memberid, certid, iconpath
     from t_member_cert
   </select>
+
+  <select id="selectByMembid" resultType="map">
+    SELECT mc.`iconpath` ,c.`name` FROM t_member_cert mc INNER JOIN t_cert  c  ON c.id=mc.`certid`  WHERE memberid = #{id};
+  </select>
 </mapper>

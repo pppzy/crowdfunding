@@ -13,4 +13,15 @@ public interface CertFormService {
 
     //更新步骤记忆信息
     void updateLastProc(CertForm certForm);
+
+    //更新表信息
+    void update(CertForm certForm);
+
+    //更新表单的完成状态和步骤记忆
+    void updateFinish(CertForm certForm);
+
+    //更新表单，完成流程
+    void passAudit(int memberId);
+
+
 }

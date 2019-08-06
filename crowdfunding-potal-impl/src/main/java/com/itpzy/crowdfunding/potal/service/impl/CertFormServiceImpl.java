@@ -26,4 +26,22 @@ public class CertFormServiceImpl implements CertFormService {
     public void updateLastProc(CertForm certForm) {
         certFormMapper.updateLastProc(certForm) ;
     }
+
+    @Override
+    public void update(CertForm certForm) {
+        certFormMapper.updateByPrimaryKey(certForm);
+    }
+
+    @Override
+    public void updateFinish(CertForm certForm) {
+        certFormMapper.updateFinish(certForm);
+    }
+
+    @Override
+    public void passAudit(int memberId) {
+        certFormMapper.passAudit(memberId);
+
+    }
+
+
 }

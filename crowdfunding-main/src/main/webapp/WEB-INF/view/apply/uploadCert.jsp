@@ -38,12 +38,12 @@
                 <div id="navbar" class="navbar-collapse collapse" style="float:right;">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> 张三<span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> ${sessionScope.member.username}<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="member.html"><i class="glyphicon glyphicon-scale"></i> 会员中心</a></li>
                                 <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
                                 <li class="divider"></li>
-                                <li><a href="index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
+                                <li><a href="${APP_PATH}/loginout.htm"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -70,10 +70,10 @@
         <c:forEach items="${requestScope.certList}" var="cert" varStatus="status">
             <div class="form-group">
                 <label >${cert.name}</label>
-                <input type="hidden" name="ids[${status.index}]" value="cert.id">
+                <input type="hidden" name="ids[${status.index}]" value="${cert.id}">
                 <input type="file" class="form-control"  name="files[${status.index}]" >
                 <br>
-
+                <img src="" style="display:none">
             </div>
 
         </c:forEach>
@@ -113,10 +113,9 @@
 
         var options = {
             url:"${APP_PATH}/member/uploadCert.do",
-            dataType:json,
             success:function (data) {
                 if(data.success){
-                    window.location.href = "${APP_PATH}/memebr/sendEmail.htm";
+                    window.location.href = "${APP_PATH}/member/toSendEmail.htm";
                 }else{
                     layer.msg(data.message,{time:1000,icon:5,shift:5});
                 }
@@ -126,6 +125,23 @@
         $("#certForm").ajaxSubmit(options);
     });
 
+    $("input:file").change(function(event){
+        // 获取当前选择的文件 event.target.files
+        var files = event.target.files, file;
+        if (files && files.length > 0) {
+            file = files[0];
+        }
+        // 判断上传文件的大小 file.size ，单位字节Byte
+        // 判断上传文件的类型 file.type
+        // 本地生成上传文件后的临时文件地址
+        var URL = window.URL || window.webkitURL;
+        var imgURL = URL.createObjectURL(file);
+
+        var imgObj = $(this).next().next();
+
+        imgObj.attr("src",imgURL);
+        imgObj.show();
+    });
 
 
 
